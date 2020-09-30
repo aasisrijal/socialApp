@@ -22,6 +22,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "no image",
     },
+    followers: [{ type: ObjectId, ref: "User" }],
+    following: [{ type: ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
