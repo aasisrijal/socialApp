@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const PORT = process.env.PORT || 5000;
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const postRoutes = require("./routes/post");
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ mongoose.connection.on("error", (err) => {
 app.use(express.json());
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/post", postRoutes);
 
 app.get("/home", (req, res) => {
   res.send("server is working");
