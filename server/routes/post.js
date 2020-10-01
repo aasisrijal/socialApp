@@ -6,8 +6,8 @@ const Post = require("../models/post");
 
 router.get("/allpost", (req, res) => {
   Post.find()
-    .populate("postedBy", "_id name")
-    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id handle")
+    .populate("comments.postedBy", "_id handle")
     .sort("-createdAt")
     .then((posts) => {
       res.json({ posts });
