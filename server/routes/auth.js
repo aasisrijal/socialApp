@@ -60,7 +60,13 @@ router.post("/signin", (req, res) => {
       .then((doMatch) => {
         if (doMatch) {
           // res.json({ message: "successfully signed in" });
-          const token = jwt.sign({ _id: savedUser._id }, keys.JWT_KEY);
+          const token = jwt.sign(
+            {
+              _id: savedUser._id,
+              exp: Math.floor(Date.now() / 1000) + 60 * 60,
+            },
+            keys.JWT_KEY
+          );
           const { _id, handle, email, pic } = savedUser;
           res.json({
             token,

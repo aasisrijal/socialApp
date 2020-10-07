@@ -15,10 +15,11 @@ const styles = makeStyles((theme) => ({
   ...theme.spreadIt,
 }));
 
-const Login = ({ history }) => {
+const Signup = ({ history }) => {
   const classes = styles();
   const [values, setValues] = useState({
     email: "",
+    handle: "",
     password: "",
     loading: false,
     error: "",
@@ -34,16 +35,16 @@ const Login = ({ history }) => {
 
     const userData = {
       email: values.email,
+      handle: values.handle,
       password: values.password,
     };
     axios
-      .post("/auth/signin", userData)
+      .post("/auth/signup", userData)
       .then((res) => {
+        localStorage.setItem("authToken", `Bearer ${res.data.token}`);
         if (res.data && res.data.error) {
           setValues({ ...values, error: res.data.error, loading: false });
         }
-        localStorage.setItem("authToken", `Bearer ${res.data.token}`);
-
         setValues({ ...values, loading: false });
         history.push("/");
       })
@@ -59,9 +60,19 @@ const Login = ({ history }) => {
       <Grid item sm>
         <h2 className={classes.logo}>SocialApp</h2>
         <Typography variant="h2" className={classes.pageTitle}>
-          Login
+          Signup
         </Typography>
         <form noValidate onSubmit={handleSubmit}>
+          <TextField
+            id="handle"
+            name="handle"
+            type="text"
+            label="handle"
+            className={classes.textField}
+            onChange={handleChange("handle")}
+            fullWidth
+          />
+
           <TextField
             id="email"
             name="email"
@@ -95,14 +106,14 @@ const Login = ({ history }) => {
             className={classes.button}
             disabled={values.loading}
           >
-            Login
+            Signup
             {values.loading && (
               <CircularProgress className={classes.progress} />
             )}
           </Button>
           <br />
           <small>
-            Don't have an account ? Sign Up <Link to="/signup">here</Link>
+            Already have an account ? Login <Link to="/login">here</Link>
           </small>
         </form>
       </Grid>
@@ -111,8 +122,8 @@ const Login = ({ history }) => {
   );
 };
 
-// Login.PropTypes = {
-//   classes: PropTypes.object.isRequired
-// }
+// Signup.PropTypes = {
+//   classes: PropTypes.object.isRequired,
+// };
 
-export default Login;
+export default Signup;
