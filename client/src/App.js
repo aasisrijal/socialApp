@@ -8,7 +8,7 @@ import Navbar from "./components/Navbar";
 
 //Pages
 import Home from "./pages/Home";
-import login from "./pages/login";
+import Login from "./pages/Login";
 import signup from "./pages/signup";
 
 const theme = createMuiTheme({
@@ -38,7 +38,7 @@ function App() {
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/signup" component={signup} />
-              <Route path="/login" component={login} />
+              <Route path="/login" component={Login} />
             </Switch>
           </div>
         </Router>
