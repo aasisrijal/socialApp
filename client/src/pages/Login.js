@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
@@ -11,18 +11,26 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+//reudx
+import { connect } from "react-redux";
+import { loginUser } from "../redux/actions/userActions";
+
 const styles = makeStyles((theme) => ({
   ...theme.spreadIt,
 }));
 
-const Login = ({ history }) => {
+const Login = ({ history, UI: { loading, error }, loginUser }) => {
   const classes = styles();
   const [values, setValues] = useState({
     email: "",
     password: "",
-    loading: false,
     error: "",
   });
+
+  useEffect(() => {
+    setValues({...setValues, error: error})
+    
+  }, [error])
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
@@ -30,27 +38,15 @@ const Login = ({ history }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setValues({ ...values, loading: true });
+    // setValues({ ...values, loading: true });
 
     const userData = {
       email: values.email,
       password: values.password,
     };
-    axios
-      .post("/auth/signin", userData)
-      .then((res) => {
-        if (res.data && res.data.error) {
-          setValues({ ...values, error: res.data.error, loading: false });
-        }
-        localStorage.setItem("authToken", `Bearer ${res.data.token}`);
+    console.log(userData);
 
-        setValues({ ...values, loading: false });
-        history.push("/");
-      })
-      .catch((err) => {
-        console.log(err);
-        setValues({ ...values, error: err.response.data, loading: false });
-      });
+    loginUser(userData, history);
   };
 
   return (
@@ -93,10 +89,10 @@ const Login = ({ history }) => {
             variant="contained"
             color="primary"
             className={classes.button}
-            disabled={values.loading}
+            disabled={loading}
           >
             Login
-            {values.loading && (
+            {loading && (
               <CircularProgress className={classes.progress} />
             )}
           </Button>
@@ -111,8 +107,19 @@ const Login = ({ history }) => {
   );
 };
 
-// Login.PropTypes = {
-//   classes: PropTypes.object.isRequired
-// }
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  UI: PropTypes.object.isRequired,
+};
 
-export default Login;
+const mapStateToProps = (state) => ({
+  user: state.user,
+  UI: state.UI,
+});
+
+const mapActionsToProps = {
+  loginUser,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Login);
